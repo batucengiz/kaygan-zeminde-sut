@@ -1,0 +1,9 @@
+{
+  "name": "kaygan-zeminde-sut",
+  "version": "1.0.0",
+  "private": true,
+  "description": "16 kişilik kayıt sitesi",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}

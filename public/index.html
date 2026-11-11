@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kaygan Zeminde Şut</title>
+<meta name="theme-color" content="#1A8D45">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* Düzen: sol sütunda başlık, sayaç halkası ve kayıt formu; altında 4x4 koltuk haritası. Yönetim sağdan açılan panelde. */
+:root{
+  --bg:#F2F7F1; --surface:#FFFFFF; --surface-2:#EFF5EE; --ink:#0B2417; --muted:#4F6B58; --line:#D2E2D5;
+  --accent:#0E8A3E; --accent-ink:#FFFFFF; --accent-soft:#D6F0DE;
+  --warm:#B25E00; --warm-soft:#FFEACC; --grass-a:#1F9A4D; --grass-b:#1A8D45; --chalk:#FFFFFF; --ok:#0E8F5B; --ok-soft:#D9F4E7; --danger:#C2253A;
+  --shadow:0 1px 2px rgba(15,22,52,.06),0 12px 32px -12px rgba(15,22,52,.18);
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Hanken Grotesk","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#06150C; --surface:#0E2517; --surface-2:#133220; --ink:#EAF7EE; --muted:#8DB59A; --line:#1D4A2F;
+  --accent:#3DDC84; --accent-ink:#04140A; --accent-soft:#12402A;
+  --warm:#FFB547; --warm-soft:#3F2C07; --grass-a:#126B38; --grass-b:#0F5F32; --chalk:#E9FFF0; --ok:#4FD99A; --ok-soft:#13382B; --danger:#FF7B8E;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 16px 40px -16px rgba(0,0,0,.7); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#06150C; --surface:#0E2517; --surface-2:#133220; --ink:#EAF7EE; --muted:#8DB59A; --line:#1D4A2F;
+  --accent:#3DDC84; --accent-ink:#04140A; --accent-soft:#12402A;
+  --warm:#FFB547; --warm-soft:#3F2C07; --grass-a:#126B38; --grass-b:#0F5F32; --chalk:#E9FFF0; --ok:#4FD99A; --ok-soft:#13382B; --danger:#FF7B8E;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 16px 40px -16px rgba(0,0,0,.7); color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;
+  padding-block:0 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1080px;margin:0 auto}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:8px}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:20px}
+.brand{font-family:var(--f-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:10px}
+.brand i{width:10px;height:10px;border-radius:3px;background:var(--accent);display:block}
+.link-btn{background:none;border:1px solid var(--line);padding:8px 14px;border-radius:999px;cursor:pointer;color:var(--ink);font-weight:500;font-size:14px}
+.link-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+.hero{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:40px;align-items:start;padding:48px 44px;border-radius:28px;margin-block:8px 44px;color:#fff;background:repeating-linear-gradient(90deg,var(--grass-a) 0 56px,var(--grass-b) 56px 112px);box-shadow:0 24px 60px -24px rgba(10,60,30,.55)}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(120% 90% at 50% 0%,rgba(255,255,255,.18),transparent 60%),radial-gradient(100% 80% at 50% 120%,rgba(0,40,15,.35),transparent 70%)}
+.pitch{position:absolute;inset:0;width:100%;height:100%;stroke:var(--chalk);fill:none;stroke-width:3;opacity:.5;pointer-events:none;z-index:-1}
+.hero>div{position:relative;z-index:1;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;background:#fff;color:#0E7A37}
+.pill::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.pill.warm{background:#FFD34D;color:#4A3300}
+.pill.off{background:rgba(255,255,255,.85);color:#4F6B58}
+h1{font-family:var(--f-display);font-weight:800;font-style:normal;font-size:clamp(36px,6vw,64px);line-height:1.02;letter-spacing:-.025em;margin:18px 0 14px;text-wrap:balance;overflow-wrap:anywhere;color:#fff;text-shadow:0 2px 0 rgba(0,50,20,.25),0 12px 30px rgba(0,40,15,.35)}
+.lead{color:rgba(255,255,255,.92);font-size:18px;max-width:52ch;margin:0 0 6px;white-space:pre-line;overflow-wrap:anywhere}
+.when{font-family:var(--f-mono);font-size:14px;color:#fff;margin:0 0 28px}
+.meter{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.ring{position:relative;width:132px;height:132px;flex:none}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .track{stroke:rgba(255,255,255,.25)}
+.ring .bar{stroke:#fff;transition:stroke-dashoffset .7s cubic-bezier(.2,.8,.2,1),stroke .3s}
+.ring.warm .bar{stroke:#FFD34D}
+.ring .num{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-family:var(--f-display);font-weight:800;font-size:38px;line-height:1}
+.ring .num small{display:block;font-family:var(--f-mono);font-weight:500;font-size:12px;color:rgba(255,255,255,.85);margin-top:4px}
+.meter-text b{display:block;font-family:var(--f-display);font-size:28px;line-height:1.1}
+.meter-text span{color:rgba(255,255,255,.85)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:28px}
+.card h2{font-family:var(--f-display);font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.card p.sub{margin:0 0 20px;color:var(--muted);font-size:15px}
+label{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+.field{margin-bottom:16px}
+input[type=text],input[type=password],textarea{width:100%;background:var(--surface-2);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-size:16px}
+textarea{resize:vertical;min-height:84px}
+input:focus,textarea:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 4px var(--accent-soft)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:13px 20px;font-weight:600;cursor:pointer;background:var(--accent);color:var(--accent-ink);width:100%;transition:transform .15s,opacity .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);width:auto}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn.danger{background:transparent;color:var(--danger);border:1.5px solid var(--danger);width:auto;padding:8px 14px}
+.btn.danger.armed{background:var(--danger);color:#fff}
+.btn.small{padding:8px 14px;font-size:14px}
+.msg{min-height:22px;font-size:14px;margin:12px 0 0;color:var(--danger)}
+.msg.good{color:var(--ok)}
+.state-box{text-align:center;padding:12px 0}
+.state-box .big{font-family:var(--f-display);font-weight:800;font-size:28px;margin:6px 0}
+.state-box p{color:var(--muted);margin:0 0 18px}
+.seatno{display:inline-grid;place-content:center;width:72px;height:72px;border-radius:20px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:32px}
+
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.sec-head h2{font-family:var(--f-display);font-size:28px;margin:0;letter-spacing:-.015em}
+.sec-head span{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;list-style:none;margin:0;padding:0}
+.seat{min-height:104px;border-radius:16px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;min-width:0;border:1.5px dashed var(--line);color:var(--muted);background:transparent}
+.seat .n{font-family:var(--f-mono);font-size:13px}
+.seat .who{font-weight:600;font-size:16px;line-height:1.25;overflow-wrap:anywhere}
+.seat{position:relative;overflow:hidden}
+.seat.taken::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg,color-mix(in srgb,#fff 38%,transparent) 0%,transparent 42%);pointer-events:none}
+.seat.taken{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);box-shadow:var(--shadow);animation:pop .35s ease}
+.seat.taken .n{color:var(--accent)}
+.seat.mine{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.seat.mine .n{color:var(--accent-ink);opacity:.8}
+@keyframes pop{from{transform:scale(.94);opacity:.4}to{transform:none;opacity:1}}
+
+.skeleton{opacity:.6}
+.foot{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:14px}
+
+/* Modal + yönetim paneli */
+.overlay{position:fixed;inset:0;background:rgba(8,10,28,.55);backdrop-filter:blur(3px);z-index:50;display:grid;place-items:center;padding:16px}
+.modal{width:min(400px,100%)}
+.panel-wrap{position:fixed;inset:0;z-index:40;display:flex;justify-content:flex-end;background:rgba(8,10,28,.55)}
+.panel{width:min(620px,100%);height:100%;overflow-y:auto;background:var(--bg);padding:24px max(16px,env(safe-area-inset-right,0px)) 40px 24px;padding-top:max(24px,env(safe-area-inset-top,0px));animation:slide .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes slide{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.panel-head h2{font-family:var(--f-display);font-size:28px;margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.stat b{display:block;font-family:var(--f-display);font-size:28px;line-height:1.1}
+.stat span{font-size:13px;color:var(--muted)}
+.block{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
+.block h3{margin:0 0 14px;font-family:var(--f-display);font-size:19px}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.switch button{width:52px;height:30px;border-radius:999px;border:0;background:var(--line);position:relative;cursor:pointer;flex:none;transition:background .2s}
+.switch button::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s}
+.switch button[aria-checked="true"]{background:var(--accent)}
+.switch button[aria-checked="true"]::after{transform:translateX(22px)}
+.rows{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.row{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--surface-2)}
+.row .no{font-family:var(--f-mono);font-size:13px;color:var(--accent);font-weight:500}
+.row .nm{font-weight:600;overflow-wrap:anywhere}
+.row .ct{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.row.empty{opacity:.55;grid-template-columns:36px 1fr}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+#copybox{width:100%;margin-top:12px;font-family:var(--f-mono);font-size:13px;min-height:120px}
+
+@media (max-width:860px){.hero{grid-template-columns:minmax(0,1fr);gap:28px;padding:36px 24px}}
+@media (max-width:560px){.hero{padding:28px 18px;border-radius:22px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:22px}.row{grid-template-columns:30px minmax(0,1fr)}.row .act{grid-column:1/-1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><i></i>Kayıt · 16 kişilik kadro</div>
+    <button class="link-btn" id="adminOpen" type="button">Yönetici girişi</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <svg class="pitch" viewBox="0 0 1000 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="24" y="24" width="952" height="512" rx="4"/><line x1="500" y1="24" x2="500" y2="536"/><circle cx="500" cy="280" r="90"/><circle cx="500" cy="280" r="5" fill="var(--chalk)"/><rect x="24" y="130" width="150" height="300"/><rect x="24" y="200" width="60" height="160"/><rect x="826" y="130" width="150" height="300"/><rect x="916" y="200" width="60" height="160"/><path d="M174 230a70 70 0 0 1 0 100M826 230a70 70 0 0 0 0 100"/></svg>
+      <div>
+        <span class="pill" id="status">Yükleniyor</span>
+        <h1 id="title">Kaygan Zeminde Şut</h1>
+        <p class="lead" id="desc">Zemin kaygan, kontenjan 16 kişi. Yerini ayır, ilk gelen sahaya çıkar.</p>
+        <p class="when" id="when" hidden></p>
+        <div class="meter">
+          <div class="ring" id="ring" role="img" aria-label="Doluluk">
+            <svg viewBox="0 0 140 140" aria-hidden="true">
+              <circle class="track" cx="70" cy="70" r="60" fill="none" stroke-width="14"/>
+              <circle class="bar" id="bar" cx="70" cy="70" r="60" fill="none" stroke-width="14" stroke-linecap="round" stroke-dasharray="376.99" stroke-dashoffset="376.99"/>
+            </svg>
+            <div class="num"><div><span id="count">0</span><small>/ 16 kişi</small></div></div>
+          </div>
+          <div class="meter-text"><b id="left">16 yer boş</b><span id="leftSub">Kontenjan 16 kişi</span></div>
+        </div>
+      </div>
+
+      <div class="card" id="card">
+        <div id="viewForm">
+          <h2>Yerini ayır</h2>
+          <p class="sub">Adın ve ulaşabileceğimiz bir numara ya da e-posta yeterli.</p>
+          <form id="form" novalidate>
+            <div class="field"><label for="fName">Ad soyad</label><input type="text" id="fName" autocomplete="name" maxlength="40" placeholder="Örn. Ayşe Yılmaz"></div>
+            <div class="field"><label for="fContact">Telefon veya e-posta</label><input type="text" id="fContact" autocomplete="off" maxlength="60" placeholder="05xx xxx xx xx"></div>
+            <button class="btn" id="submit" type="submit">Kaydımı tamamla</button>
+            <p class="msg" id="formMsg" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+        <div id="viewMine" class="state-box" hidden>
+          <div class="seatno" id="mineNo">1</div>
+          <div class="big">Yerin ayrıldı</div>
+          <p id="mineName">Görüşmek üzere.</p>
+          <button class="btn ghost small" id="cancelMine" type="button">Kaydımı iptal et</button>
+        </div>
+        <div id="viewFull" class="state-box" hidden>
+          <div class="big">Kontenjan doldu</div>
+          <p>16 yerin hepsi alındı. Bir yer boşalırsa bu sayfada tekrar kayıt açılır.</p>
+        </div>
+        <div id="viewClosed" class="state-box" hidden>
+          <div class="big">Kayıtlar kapalı</div>
+          <p>Yönetici şu an yeni kayıt almıyor.</p>
+        </div>
+        <div id="viewOffline" class="state-box" hidden>
+          <div class="big">Bağlantı kurulamadı</div>
+          <p id="offlineText">Kayıt verisine ulaşılamıyor. Sayfayı bağlantıyla, hesabınla giriş yaparak aç.</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="gTitle">
+      <div class="sec-head"><h2 id="gTitle">Katılımcılar</h2><span id="gMeta">0 dolu · 16 boş</span></div>
+      <ol class="grid skeleton" id="grid"></ol>
+    </section>
+  </main>
+
+  <footer class="foot"><span>Kontenjan 16 kişi. Yer ayırma sırayla ve anında yapılır.</span><span id="sync">Bağlanıyor…</span></footer>
+</div>
+
+<div class="overlay" id="login" hidden>
+  <div class="card modal">
+    <h2>Yönetici girişi</h2>
+    <p class="sub">Yönetim paneli için şifreyi gir.</p>
+    <form id="loginForm" novalidate>
+      <div class="field"><label for="pw">Şifre</label><input type="password" id="pw" autocomplete="off"></div>
+      <div class="actions" style="margin-top:0">
+        <button class="btn" type="submit" style="flex:1">Giriş yap</button>
+        <button class="btn ghost" type="button" id="loginCancel">Vazgeç</button>
+      </div>
+      <p class="msg" id="loginMsg" role="alert"></p>
+    </form>
+  </div>
+</div>
+
+<div class="panel-wrap" id="adminWrap" hidden>
+  <aside class="panel" aria-label="Yönetim paneli">
+    <div class="panel-head"><h2>Yönetim</h2><div class="actions" style="margin:0"><button class="btn ghost small" id="logout" type="button">Çıkış yap</button><button class="btn ghost small" id="adminClose" type="button">Kapat</button></div></div>
+    <div class="stats">
+      <div class="stat"><b id="sTaken">0</b><span>Dolu</span></div>
+      <div class="stat"><b id="sFree">16</b><span>Boş</span></div>
+      <div class="stat"><b>16</b><span>Kontenjan</span></div>
+    </div>
+
+    <div class="block">
+      <h3>Etkinlik bilgileri</h3>
+      <div class="switch"><div><b>Kayıtlar açık</b><div class="ct" style="font-size:13px;color:var(--muted)">Kapatınca yeni kayıt alınmaz.</div></div><button type="button" id="openSwitch" role="switch" aria-checked="true" aria-label="Kayıtlar açık"></button></div>
+      <div class="field"><label for="cTitle">Başlık</label><input type="text" id="cTitle" maxlength="60"></div>
+      <div class="field"><label for="cWhen">Tarih ve yer</label><input type="text" id="cWhen" maxlength="80" placeholder="Örn. 22 Kasım, 14:00 · Spor salonu"></div>
+      <div class="field"><label for="cDesc">Açıklama</label><textarea id="cDesc" maxlength="400"></textarea></div>
+      <button class="btn small" id="saveCfg" type="button" style="width:auto">Bilgileri kaydet</button>
+      <p class="msg" id="cfgMsg" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="block">
+      <h3>Katılımcı listesi</h3>
+      <ul class="rows" id="rows"></ul>
+      <div class="actions">
+        <button class="btn ghost small" id="copyList" type="button">Listeyi kopyala</button>
+        <button class="btn danger small" id="resetAll" type="button">Tüm kayıtları sil</button>
+      </div>
+      <textarea id="copybox" readonly hidden aria-label="Kopyalanan liste"></textarea>
+      <p class="msg" id="listMsg" role="status" aria-live="polite"></p>
+    </div>
+  </aside>
+</div>
+
+<div style="position:fixed;left:0;right:0;bottom:max(16px,env(safe-area-inset-bottom,0px));display:grid;place-items:center;pointer-events:none;z-index:60"><div id="toast" role="status" aria-live="polite" style="background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;font-weight:500;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s;max-width:calc(100vw - 32px)"></div></div>
+
+<script>
+(function(){
+  var LIMIT = 16, CIRC = 376.99, POLL = 4000;
+  var DEFAULTS = {title:"Kaygan Zeminde Şut", desc:"Zemin kaygan, kontenjan 16 kişi. Yerini ayır, ilk gelen sahaya çıkar.", when:"", open:true};
+
+  var $ = function(id){return document.getElementById(id)};
+  var pub = {config:{}, slots:{}, mine:0}, adminSlots = {};
+  var loaded = false, offline = false, busy = false, isAdmin = false, panelOpen = false;
+  var adminToken = "";
+  try{ adminToken = sessionStorage.getItem("kayit-admin") || ""; }catch(e){}
+  var token = (function(){
+    var t = null;
+    try{ t = localStorage.getItem("kayit-token"); }catch(e){}
+    if(!t){
+      var a = new Uint8Array(12);
+      (window.crypto||window.msCrypto).getRandomValues(a);
+      t = "t" + Array.prototype.map.call(a,function(b){return ("0"+b.toString(16)).slice(-2)}).join("");
+      try{ localStorage.setItem("kayit-token", t); }catch(e){}
+    }
+    return t;
+  })();
+
+  function pad(n){return (n<10?"0":"")+n}
+  function el(tag, cls, text){var e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e}
+  function conf(){
+    var c = pub.config || {};
+    return {title:c.title||DEFAULTS.title, desc:c.desc!=null?c.desc:DEFAULTS.desc, when:c.when||"", open:c.open!==false};
+  }
+  function takenCount(){var c=0; for(var i=1;i<=LIMIT;i++) if(pub.slots[i]) c++; return c}
+  function mine(){return pub.mine||0}
+  var toastTimer;
+  function toast(t){
+    var e=$("toast"); e.textContent=t; e.style.opacity=1; e.style.transform="none";
+    clearTimeout(toastTimer); toastTimer=setTimeout(function(){e.style.opacity=0; e.style.transform="translateY(8px)"},2600);
+  }
+  function setSync(t){$("sync").textContent=t}
+
+  /* Sunucu çağrısı: ağ hatasında status 0 döner */
+  function api(method, url, body, auth){
+    var h = {"X-Client-Token": token};
+    if(body) h["Content-Type"] = "application/json";
+    if(auth && adminToken) h["Authorization"] = "Bearer " + adminToken;
+    return fetch(url, {method:method, headers:h, body: body?JSON.stringify(body):undefined, cache:"no-store"})
+      .then(function(r){ return r.json().catch(function(){return {}}).then(function(d){return {status:r.status, data:d}}); })
+      .catch(function(){ return {status:0, data:{}}; });
+  }
+
+  function render(){
+    var c = conf(), taken = takenCount(), left = LIMIT-taken, m = mine();
+    $("title").textContent = c.title;
+    $("desc").textContent = c.desc;
+    document.title = c.title;
+    var w = $("when"); w.hidden = !c.when; w.textContent = c.when;
+
+    var warm = left>0 && left<=3;
+    $("count").textContent = taken;
+    $("bar").style.strokeDashoffset = CIRC*(1 - taken/LIMIT);
+    $("ring").classList.toggle("warm", warm || left===0);
+    $("ring").setAttribute("aria-label", taken+" / "+LIMIT+" kişi kayıtlı");
+    $("left").textContent = left===0 ? "Kontenjan doldu" : left+" yer boş";
+    $("leftSub").textContent = left===0 ? "16 kişi tamamlandı" : (warm ? "Son yerler, acele et" : "Toplam kontenjan 16 kişi");
+
+    var st = $("status");
+    st.className = "pill";
+    if(!loaded){ st.textContent = offline ? "Bağlantı yok" : "Yükleniyor"; st.classList.add("off"); }
+    else if(!c.open){ st.textContent="Kayıtlar kapalı"; st.classList.add("off"); }
+    else if(left===0){ st.textContent="Kontenjan doldu"; st.classList.add("warm"); }
+    else if(warm){ st.textContent="Son "+left+" yer"; st.classList.add("warm"); }
+    else { st.textContent="Kayıtlar açık"; }
+
+    var view = "viewForm";
+    if(!loaded && offline) view="viewOffline";
+    else if(m) view="viewMine";
+    else if(loaded && left===0) view="viewFull";
+    else if(loaded && !c.open) view="viewClosed";
+    ["viewForm","viewMine","viewFull","viewClosed","viewOffline"].forEach(function(id){$(id).hidden = id!==view});
+    if(m && pub.slots[m]){ $("mineNo").textContent = m; $("mineName").textContent = pub.slots[m].name+", yerin ayrıldı. Yer numaran "+m+"."; }
+    $("submit").disabled = busy || !loaded;
+
+    $("gMeta").textContent = taken+" dolu · "+left+" boş";
+    var g = $("grid"); g.className = "grid"+(loaded?"":" skeleton");
+    var frag = document.createDocumentFragment();
+    for(var i=1;i<=LIMIT;i++){
+      var s = pub.slots[i], li = el("li","seat"+(s?" taken":"")+(s && i===m?" mine":""));
+      li.appendChild(el("span","n","#"+pad(i)));
+      li.appendChild(el("span","who", s ? (i===m ? s.name+" (sen)" : s.name) : "Boş"));
+      frag.appendChild(li);
+    }
+    g.replaceChildren(frag);
+    if(panelOpen) renderAdmin();
+  }
+
+  function renderAdmin(){
+    var taken = takenCount();
+    $("sTaken").textContent = taken; $("sFree").textContent = LIMIT-taken;
+    $("openSwitch").setAttribute("aria-checked", conf().open ? "true":"false");
+    var rows = $("rows"), frag = document.createDocumentFragment();
+    for(var i=1;i<=LIMIT;i++){
+      (function(i){
+        var s = adminSlots[i], li = el("li","row"+(s?"":" empty"));
+        li.appendChild(el("span","no","#"+pad(i)));
+        if(!s){ li.appendChild(el("span","ct","Boş")); frag.appendChild(li); return; }
+        var box = el("div"); box.appendChild(el("div","nm",s.name)); box.appendChild(el("div","ct",s.contact+(s.at?" · "+new Date(s.at).toLocaleString("tr-TR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"")));
+        li.appendChild(box);
+        var act = el("div","act"), b = el("button","btn danger small","Sil"); b.type="button";
+        arm(b,"Emin misin?","Sil",function(){removeSlot(i)});
+        act.appendChild(b); li.appendChild(act); frag.appendChild(li);
+      })(i);
+    }
+    rows.replaceChildren(frag);
+  }
+
+  /* İki adımlı onay: ilk dokunuş düğmeyi "Emin misin?" yapar */
+  function arm(btn, armedText, idleText, fn){
+    var t=null;
+    btn.addEventListener("click", function(){
+      if(btn.classList.contains("armed")){ clearTimeout(t); btn.classList.remove("armed"); btn.textContent=idleText; fn(); return; }
+      btn.classList.add("armed"); btn.textContent=armedText;
+      t=setTimeout(function(){btn.classList.remove("armed"); btn.textContent=idleText},3500);
+    });
+  }
+
+  function errText(r){
+    var s = r && r.status;
+    if(s===0) return "Bağlantı kurulamadı. İnternetini kontrol edip tekrar dene.";
+    if(s===429) return "Çok fazla deneme yaptın. Bir dakika bekleyip tekrar dene.";
+    if(s===401){ logout(true); return "Oturumun doldu. Yönetici olarak tekrar giriş yap."; }
+    return "İşlem tamamlanamadı. Tekrar dene.";
+  }
+
+  /* Veri yükleme */
+  async function loadPublic(){
+    var r = await api("GET","/api/state");
+    if(r.status===200){ pub = r.data; loaded = true; offline = false; setSync("Canlı · güncel"); }
+    else { offline = true; setSync(loaded ? "Bağlantı kesildi, yeniden deneniyor" : "Bağlantı yok"); }
+  }
+  async function loadAdmin(){
+    if(!panelOpen) return;
+    var r = await api("GET","/api/admin/state",null,true);
+    if(r.status===200) adminSlots = r.data.slots || {};
+    else if(r.status===401) errText(r);
+  }
+  async function refresh(){ await loadPublic(); await loadAdmin(); render(); }
+
+  /* Kayıt */
+  $("form").addEventListener("submit", async function(ev){
+    ev.preventDefault();
+    var msg = $("formMsg"); msg.className="msg"; msg.textContent="";
+    var name = $("fName").value.trim().replace(/\s+/g," "), contact = $("fContact").value.trim();
+    if(busy) return;
+    if(name.length<3 || name.split(" ").length<2){ msg.textContent="Ad ve soyadını birlikte yaz."; $("fName").focus(); return; }
+    if(contact.length<5){ msg.textContent="Telefon numaranı veya e-postanı yaz."; $("fContact").focus(); return; }
+    busy = true; $("submit").disabled = true; $("submit").textContent = "Yer ayrılıyor…";
+    var r = await api("POST","/api/register",{name:name, contact:contact});
+    if(r.status===200){ toast("Yer #"+pad(r.data.n)+" senin"); $("fName").value=""; $("fContact").value=""; }
+    else if(r.status===409 && r.data.error==="full"){ msg.textContent = "Üzgünüz, son yer az önce alındı. Kontenjan doldu."; }
+    else if(r.status===409){ msg.textContent = "Bu cihazdan zaten kayıt yaptın."; }
+    else if(r.status===403){ msg.textContent = "Kayıtlar şu an kapalı."; }
+    else if(r.status===400 && r.data.error==="name"){ msg.textContent = "Ad ve soyadını birlikte yaz."; }
+    else if(r.status===400 && r.data.error==="contact"){ msg.textContent = "Telefon numaranı veya e-postanı yaz."; }
+    else { msg.textContent = errText(r); }
+    busy = false; $("submit").textContent = "Kaydımı tamamla";
+    await refresh();
+  });
+
+  arm($("cancelMine"),"Emin misin?","Kaydımı iptal et",async function(){
+    var r = await api("POST","/api/cancel",{});
+    toast(r.status===200 ? "Kaydın iptal edildi" : errText(r));
+    await refresh();
+  });
+
+  /* Yönetici */
+  async function removeSlot(i){
+    var r = await api("POST","/api/admin/slot/delete",{n:i},true);
+    toast(r.status===200 ? "Kayıt silindi" : errText(r));
+    await refresh();
+  }
+  function openPanel(){
+    panelOpen = true; isAdmin = true; $("adminWrap").hidden=false; document.body.style.overflow="hidden";
+    var c = conf(); $("cTitle").value=c.title; $("cWhen").value=c.when; $("cDesc").value=c.desc;
+    refresh();
+  }
+  function closePanel(){ panelOpen=false; $("adminWrap").hidden=true; document.body.style.overflow=""; }
+  function logout(silent){
+    api("POST","/api/admin/logout",{},true);
+    adminToken=""; isAdmin=false; try{sessionStorage.removeItem("kayit-admin")}catch(e){}
+    closePanel();
+  }
+  function openLogin(){
+    if(isAdmin && adminToken){ openPanel(); return; }
+    $("login").hidden=false; $("loginMsg").textContent=""; $("pw").value=""; setTimeout(function(){$("pw").focus()},30);
+  }
+  $("adminOpen").addEventListener("click", openLogin);
+  $("loginCancel").addEventListener("click", function(){$("login").hidden=true});
+  $("login").addEventListener("click", function(e){ if(e.target===$("login")) $("login").hidden=true; });
+  $("loginForm").addEventListener("submit", async function(ev){
+    ev.preventDefault();
+    var m = $("loginMsg"); m.textContent="";
+    var r = await api("POST","/api/admin/login",{password:$("pw").value});
+    if(r.status===200){
+      adminToken = r.data.token; isAdmin = true;
+      try{sessionStorage.setItem("kayit-admin",adminToken)}catch(e){}
+      $("login").hidden=true; $("pw").value="";
+      openPanel();
+    } else if(r.status===401){ m.textContent="Şifre yanlış. Tekrar dene."; $("pw").select(); }
+    else if(r.status===429){ m.textContent="Çok fazla deneme. Bir dakika bekle."; }
+    else { m.textContent="Bağlantı kurulamadı. Tekrar dene."; }
+  });
+  $("adminClose").addEventListener("click", closePanel);
+  $("logout").addEventListener("click", function(){ logout(); });
+  document.addEventListener("keydown", function(e){
+    if(e.key==="Escape"){ if(!$("login").hidden) $("login").hidden=true; else if(!$("adminWrap").hidden) closePanel(); }
+  });
+
+  $("openSwitch").addEventListener("click", async function(){
+    var c = conf(); c.open = !c.open;
+    var r = await api("POST","/api/admin/config",c,true);
+    toast(r.status===200 ? (c.open?"Kayıtlar açıldı":"Kayıtlar kapatıldı") : errText(r));
+    await refresh();
+  });
+  $("saveCfg").addEventListener("click", async function(){
+    var m=$("cfgMsg"); m.className="msg"; m.textContent="";
+    var t=$("cTitle").value.trim();
+    if(!t){ m.textContent="Başlık boş olamaz."; return; }
+    var r = await api("POST","/api/admin/config",{title:t, when:$("cWhen").value.trim(), desc:$("cDesc").value.trim(), open:conf().open},true);
+    if(r.status===200){ m.className="msg good"; m.textContent="Kaydedildi."; toast("Bilgiler güncellendi"); }
+    else m.textContent = errText(r);
+    await refresh();
+  });
+  $("copyList").addEventListener("click", function(){
+    var lines=["No\tAd soyad\tİletişim\tKayıt zamanı"];
+    for(var i=1;i<=LIMIT;i++){ var s=adminSlots[i]; if(s) lines.push(pad(i)+"\t"+s.name+"\t"+s.contact+"\t"+(s.at?new Date(s.at).toLocaleString("tr-TR"):"")); }
+    var text=lines.join("\n"), box=$("copybox"), m=$("listMsg");
+    box.value=text;
+    var ok=function(){ m.className="msg good"; m.textContent="Liste kopyalandı."; };
+    var fallback=function(){ box.hidden=false; box.select(); m.className="msg"; m.textContent="Kopyalanamadı. Metni seçip elle kopyala."; };
+    try{ navigator.clipboard.writeText(text).then(ok,fallback); }catch(e){ fallback(); }
+  });
+  arm($("resetAll"),"Hepsini sil, emin misin?","Tüm kayıtları sil",async function(){
+    var m=$("listMsg"); m.className="msg"; m.textContent="";
+    var r = await api("POST","/api/admin/reset",{},true);
+    if(r.status===200) toast("Tüm kayıtlar silindi"); else m.textContent = errText(r);
+    await refresh();
+  });
+
+  /* Başlangıç */
+  render();
+  refresh().then(function(){
+    if(adminToken){ isAdmin = true; }
+  });
+  setInterval(function(){ if(!document.hidden) refresh(); }, POLL);
+  document.addEventListener("visibilitychange", function(){ if(!document.hidden) refresh(); });
+})();
+</script>
+
+</body>
+</html>

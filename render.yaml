@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: kaygan-zeminde-sut
+    runtime: node
+    plan: free
+    buildCommand: echo "derleme gerekmiyor"
+    startCommand: node server.js
+    healthCheckPath: /healthz
+    envVars:
+      - key: ADMIN_PASSWORD
+        sync: false
